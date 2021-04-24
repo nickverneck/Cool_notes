@@ -25,18 +25,47 @@ saveDb = (req) =>{
   }
   });
 }
+deleteitem = (req)=>{
+  fs.readFile(dbPath,'utf8',(err,data)=> {
+    if (err){
+      console.log(err);
+  }
+  else{ 
+   
+    var dbData = JSON.parse(data);
+  
+   for (let i = 0; i < dbData.length; i++ ){
+     
+     if (dbData[i].id === req.params.id)
+     {
+       dbData.splice(i,1);
+       
+     }
 
+   }
+    
+    fs.writeFile(dbPath,JSON.stringify(dbData),(erro)=> {
+    if (erro)
+    {
+      console.log(erro)
+    } 
+  })
+   
+  }
+  });
+}
 
 
 module.exports = (app) => {
 
   app.get('/api/notes', (req, res) => res.sendFile(dbPath));
-
-
+  
   app.post('/api/notes', (req, res) => {
-    
-      
-      saveDb(req)
+   saveDb(req)
+ })
 
-  })
+ app.delete('/api/notes/:id',(req,res)=>{
+  deleteitem(req);
+ })
+
 };
